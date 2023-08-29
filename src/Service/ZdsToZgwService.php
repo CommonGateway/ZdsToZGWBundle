@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
  */
 class ZdsToZgwService
 {
+
     /**
      * @var EntityManagerInterface
      */
@@ -48,6 +49,7 @@ class ZdsToZgwService
      */
     private array $configuration;
 
+
     /**
      * @param EntityManagerInterface $entityManager  The Entity Manager
      * @param MappingService         $mappingService The MappingService
@@ -59,11 +61,13 @@ class ZdsToZgwService
         CacheService $cacheService,
         LoggerInterface $actionLogger
     ) {
-        $this->entityManager = $entityManager;
+        $this->entityManager  = $entityManager;
         $this->mappingService = $mappingService;
-        $this->cacheService = $cacheService;
-        $this->logger = $actionLogger;
+        $this->cacheService   = $cacheService;
+        $this->logger         = $actionLogger;
+
     }//end __construct()
+
 
     /**
      * Set symfony style in order to output to the console.
@@ -78,7 +82,9 @@ class ZdsToZgwService
         $this->mappingService->setStyle($io);
 
         return $this;
+
     }//end setStyle()
+
 
     /**
      * Get an entity by reference.
@@ -96,7 +102,9 @@ class ZdsToZgwService
         }//end if
 
         return $entity;
+
     }//end getEntity()
+
 
     /**
      * Gets mapping for reference.
@@ -113,7 +121,9 @@ class ZdsToZgwService
         }
 
         return $mapping;
+
     }//end getMapping()
+
 
     /**
      * Creates a response based on content.
@@ -126,11 +136,13 @@ class ZdsToZgwService
     public function createResponse(array $content, int $status): Response
     {
         $this->logger->debug('Creating XML response');
-        $xmlEncoder = new XmlEncoder(['xml_root_node_name' => 'SOAP-ENV:Envelope']);
+        $xmlEncoder    = new XmlEncoder(['xml_root_node_name' => 'SOAP-ENV:Envelope']);
         $contentString = $xmlEncoder->encode($content, 'xml', ['xml_encoding' => 'utf-8', 'remove_empty_tags' => true]);
 
         return new Response($contentString, $status);
+
     }//end createResponse()
+
 
     /**
      * Handles incoming creeerZaakIdentificatie messages, creates a case with incoming reference as identificatie field.
@@ -152,7 +164,7 @@ class ZdsToZgwService
         }
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
-        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
+        $zaken     = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$zaakEntity->getId()->toString()])['results'];
         if ($zaken === []) {
             $this->logger->debug('Creating new case with identifier'.$zaakArray['identificatie']);
             $zaak = new ObjectEntity($zaakEntity);
@@ -162,7 +174,7 @@ class ZdsToZgwService
             $this->entityManager->flush();
 
             $this->logger->info('Created case with identifier '.$zaakArray['identificatie']);
-            $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwZaakToDu02.mapping.json');
+            $mappingOut       = $this->getMapping('https://zds.nl/mapping/zds.zgwZaakToDu02.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
         } else {
             $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
@@ -170,7 +182,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end zaakIdentificatieActionHandler()
+
 
     /**
      * Handles incoming creeerDocumentIdentificatie messages, creates a document with incoming reference as identificatie field.
@@ -190,7 +204,7 @@ class ZdsToZgwService
         $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsDocumentIdToZgwDocument.mapping.json');
 
         $documentArray = $this->mappingService->mapping($mapping, $data['body']);
-        $documents = $this->cacheService->searchObjects(null, ['identificatie' => $documentArray['identificatie']], [$documentEntity->getId()->toString()])['results'];
+        $documents     = $this->cacheService->searchObjects(null, ['identificatie' => $documentArray['identificatie']], [$documentEntity->getId()->toString()])['results'];
         if ($documents === []) {
             $this->logger->debug('Creating new document for identification'.$documentArray['identificatie']);
             $document = new ObjectEntity($documentEntity);
@@ -200,7 +214,7 @@ class ZdsToZgwService
             $this->entityManager->flush();
 
             $this->logger->info('Created case with identifier '.$documentArray['identificatie']);
-            $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToDu02.mapping.json');
+            $mappingOut       = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToDu02.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
         } else {
             $this->logger->warning('Case with identifier '.$documentArray['identificatie'].' found, returning bad request error');
@@ -208,7 +222,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end documentIdentificatieActionHandler()
+
 
     /**
      * Connects Eigenschappen to ZaakType if eigenschap does not exist yet, or connect existing Eigenschap to ZaakEigenschap.
@@ -233,7 +249,7 @@ class ZdsToZgwService
             } else {
                 $this->logger->debug('No existing property found, creating new property');
 
-                $eigenschapObject = new ObjectEntity($eigenschapEntity);
+                $eigenschapObject                     = new ObjectEntity($eigenschapEntity);
                 $eigenschap['eigenschap']['zaaktype'] = $zaakType->getSelf();
                 $eigenschapObject->hydrate($eigenschap['eigenschap']);
 
@@ -251,7 +267,9 @@ class ZdsToZgwService
         $this->logger->info('Connected case properties to case type properties');
 
         return $zaakArray;
+
     }//end connectEigenschappen()
+
 
     /**
      * Connects RoleTypes to ZaakType if RoleType does not exist yet, or connect existing RoleType to Role.
@@ -264,7 +282,7 @@ class ZdsToZgwService
     public function connectRolTypes(array $zaakArray, ObjectEntity $zaakType): array
     {
         $this->logger->info('Trying to connect roles to existing role types');
-        $rolTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json');
+        $rolTypeEntity  = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.rolType.schema.json');
         $rolTypeObjects = $zaakType->getValue('roltypen');
 
         foreach ($zaakArray['rollen'] as $key => $role) {
@@ -272,10 +290,10 @@ class ZdsToZgwService
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
-                $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
+                $rolType                              = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
             } else {
                 $this->logger->debug('No existing role type has been found, creating new role type');
-                $rolType = new ObjectEntity($rolTypeEntity);
+                $rolType                     = new ObjectEntity($rolTypeEntity);
                 $role['roltype']['zaaktype'] = $zaakType->getSelf();
                 $rolType->hydrate($role['roltype']);
 
@@ -291,7 +309,9 @@ class ZdsToZgwService
         $this->logger->info('Connected roles to role types');
 
         return $zaakArray;
+
     }//end connectRolTypes()
+
 
     /**
      * Creates ZaakType if no ZaakType exists, connect existing ZaakType if ZaakType with identifier exists.
@@ -305,11 +325,11 @@ class ZdsToZgwService
         $this->logger->debug('Trying to connect case to existing case type');
 
         $zaakTypeEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.zaakType.schema.json');
-        $zaaktypes = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$zaakTypeEntity->getId()->toString()])['results'];
+        $zaaktypes      = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$zaakTypeEntity->getId()->toString()])['results'];
         if (count($zaaktypes) > 0) {
             $this->logger->debug('Case type found, connecting case to case type');
 
-            $zaaktype = $this->entityManager->find('App:ObjectEntity', $zaaktypes[0]['_self']['id']);
+            $zaaktype              = $this->entityManager->find('App:ObjectEntity', $zaaktypes[0]['_self']['id']);
             $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
         } else {
             $this->logger->debug('No existing case type found, creating new case type');
@@ -329,7 +349,9 @@ class ZdsToZgwService
         $zaakArray = $this->connectRolTypes($zaakArray, $zaaktype);
 
         return $zaakArray;
+
     }//end convertZaakType()
+
 
     /**
      * Receives a case and maps it to a ZGW case.
@@ -345,7 +367,7 @@ class ZdsToZgwService
         $this->configuration = $config;
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
-        $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakToZgwZaak.mapping.json');
+        $mapping    = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakToZgwZaak.mapping.json');
 
         $zaakArray = $this->mappingService->mapping($mapping, $data['body']);
 
@@ -363,10 +385,10 @@ class ZdsToZgwService
 
             $this->logger->info('Populated case with identification'.$zaakArray['identificatie']);
 
-            $data['object'] = $zaak->toArray();
-            $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwZaakToBv03.mapping.json');
+            $data['object']   = $zaak->toArray();
+            $mappingOut       = $this->getMapping('https://zds.nl/mapping/zds.zgwZaakToBv03.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
-        } elseif (count($zaken) > 1) {
+        } else if (count($zaken) > 1) {
             $this->logger->warning('More than one case was found for identifier'.$zaakArray['identificatie']);
 
             $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakArray['identificatie']], 400);
@@ -377,7 +399,9 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end zaakActionHandler()
+
 
     /**
      * Receives a document and maps it to a ZGW EnkelvoudigInformatieObject.
@@ -392,15 +416,15 @@ class ZdsToZgwService
         $this->logger->info('Populating document');
         $this->configuration = $config;
 
-        $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
+        $zaakEntity         = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
         $zaakDocumentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json');
-        $documentEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
-        $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsDocumentToZgwDocument.mapping.json');
+        $documentEntity     = $this->getEntity('https://vng.opencatalogi.nl/schemas/drc.enkelvoudigInformatieObject.schema.json');
+        $mapping            = $this->getMapping('https://zds.nl/mapping/zds.zdsDocumentToZgwDocument.mapping.json');
 
         $zaakDocumentArray = $this->mappingService->mapping($mapping, $data['body']);
 
         $documenten = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['informatieobject']['identificatie']], [$documentEntity->getId()->toString()])['results'];
-        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['zaak']], [$zaakEntity->getId()->toString()])['results'];
+        $zaken      = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['zaak']], [$zaakEntity->getId()->toString()])['results'];
         if (count($documenten) === 1 && count($zaken) === 1) {
             $this->logger->debug('Populating document with identification'.$zaakDocumentArray['informatieobject']['identificatie']);
 
@@ -417,15 +441,15 @@ class ZdsToZgwService
 
             $this->logger->info('Populated document with identification'.$zaakDocumentArray['informatieobject']['identificatie']);
             $data['documents'][] = $zaakInformatieObject->toArray();
-            $mappingOut = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json');
-            $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
-        } elseif (count($documenten) > 1 && count($zaken) > 1) {
+            $mappingOut          = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json');
+            $data['response']    = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
+        } else if (count($documenten) > 1 && count($zaken) > 1) {
             $this->logger->warning('More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie'].' and more than one case found with id '.$zaakDocumentArray['zaak']);
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie'].' and more than one case found with id '.$zaakDocumentArray['zaak']], 400);
-        } elseif (count($documenten) > 1) {
+        } else if (count($documenten) > 1) {
             $this->logger->warning('More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']);
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']], 400);
-        } elseif (count($zaken) > 1) {
+        } else if (count($zaken) > 1) {
             $this->logger->warning('More than one case exists with id '.$zaakDocumentArray['zaak']);
             $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakDocumentArray['zaak']], 400);
         } else {
@@ -434,5 +458,8 @@ class ZdsToZgwService
         }//end if
 
         return $data;
+
     }//end documentActionHandler()
-}
+
+
+}//end class
