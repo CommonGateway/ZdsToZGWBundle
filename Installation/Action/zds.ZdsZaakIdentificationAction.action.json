@@ -1,0 +1,19 @@
+{
+  "title": "ZdsZaakIdentificationAction",
+  "$id": "https://zds.nl/action/zds.ZdsZaakIdentificationAction.action.json",
+  "$schema": "https://docs.commongateway.nl/schemas/ActionHandler.schema.json",
+  "version": "0.0.1",
+  "listens": [
+    "zds.inbound"
+  ],
+  "throws": [],
+  "conditions": {
+    "==": [
+      {"var": "body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02"}
+    ]
+  },
+  "class": "CommonGateway\\ZdsToZGWBundle\\ActionHandler\\ZaakIdentificatieActionHandler",
+  "configuration": [],
+  "isLockable": false,
+  "isEnabled": true
+}
