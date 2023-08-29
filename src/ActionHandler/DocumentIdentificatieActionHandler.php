@@ -10,10 +10,12 @@ use CommonGateway\NaamgebruikVrijBRPBundle\Service\ZdsToZgwService;
  */
 class DocumentIdentificatieActionHandler implements ActionHandlerInterface
 {
+
     /**
      * @var ZdsToZgwService
      */
     private ZdsToZgwService $zdsToZgwService;
+
 
     /**
      * @param ZdsToZgwService $zdsToZgwService The ZdsToZgwService
@@ -21,7 +23,9 @@ class DocumentIdentificatieActionHandler implements ActionHandlerInterface
     public function __construct(ZdsToZgwService $zdsToZgwService)
     {
         $this->zdsToZgwService = $zdsToZgwService;
+
     }//end __construct()
+
 
     /**
      *  This function returns the required configuration as a [json-schema](https://json-schema.org/) array.
@@ -36,7 +40,9 @@ class DocumentIdentificatieActionHandler implements ActionHandlerInterface
             'title'       => 'DocumentIdentificatieActionHandler',
             'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
         ];
+
     }//end getConfiguration()
+
 
     /**
      * This function runs the application to gateway service plugin.
@@ -49,5 +55,8 @@ class DocumentIdentificatieActionHandler implements ActionHandlerInterface
     public function run(array $data, array $configuration): array
     {
         return $this->zdsToZgwService->documentIdentificatieActionHandler($data, $configuration);
+
     }//end run()
-}
+
+
+}//end class
