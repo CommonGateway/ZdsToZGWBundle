@@ -158,7 +158,7 @@ class ZdsToZgwService
         $this->configuration = $config;
 
         $zaakEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json');
-        $mapping = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakIdToZgwZaak.mapping.json');
+        $mapping    = $this->getMapping('https://zds.nl/mapping/zds.zdsZaakIdToZgwZaak.mapping.json');
         if ($zaakEntity === null || $mapping === null) {
             return $data;
         }
@@ -238,7 +238,7 @@ class ZdsToZgwService
     {
         $this->logger->info('Trying to connect case type properties to existing properties');
 
-        $eigenschapEntity = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.eigenschap.schema.json');
+        $eigenschapEntity  = $this->getEntity('https://vng.opencatalogi.nl/schemas/ztc.eigenschap.schema.json');
         $eigenschapObjects = [];
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
             $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$eigenschapEntity->getId()->toString()])['results'];
@@ -257,7 +257,7 @@ class ZdsToZgwService
                 $this->entityManager->flush();
 
                 // @TODO: Check what should be here.
-//                $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
+                // $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
                 $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject;
             }//end if
         }//end foreach
