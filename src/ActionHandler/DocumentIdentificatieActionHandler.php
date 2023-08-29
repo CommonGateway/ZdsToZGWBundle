@@ -3,7 +3,7 @@
 namespace CommonGateway\ZdsToZGWBundle\ActionHandler;
 
 use CommonGateway\CoreBundle\ActionHandler\ActionHandlerInterface;
-use CommonGateway\NaamgebruikVrijBRPBundle\Service\ZdsToZgwService;
+use CommonGateway\ZdsToZGWBundle\Service\ZdsToZgwService;
 
 /**
  * Haalt applications op van de componenten catalogus.
