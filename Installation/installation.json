@@ -1,3 +1,20 @@
 {
-    "installationService": "CommonGateway\\ZdsToZGWBundle\\Service\\InstallationService"
+    "installationService": "CommonGateway\\ZdsToZGWBundle\\Service\\InstallationService",
+    "endpoints": {
+        "schemas": [
+            {
+                "$id": "https://zds..nl/endpoint/zds.endpoint.json",
+                "reference": "https://simxml.vrijBRP.nl/schemas/simxml.zrc.zaak.schema.json",
+                "path": "stuf/zds",
+                "methods": [
+                    "POST"
+                ],
+                "defaultContentType": "text/xml",
+                "throws": [
+                    "zds.inbound"
+                ],
+                "version": "0.0.1"
+            }
+        ]
+    }
 }
