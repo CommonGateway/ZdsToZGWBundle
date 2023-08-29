@@ -294,11 +294,5 @@
     "referentienummer": {
       "type": "string"
     }
-  },
-  "required": [
-    "zaaktype",
-    "registratiedatum",
-    "verantwoordelijkeOrganisatie",
-    "startdatum"
-  ]
+  }
 }
