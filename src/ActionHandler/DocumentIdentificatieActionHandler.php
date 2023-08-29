@@ -39,7 +39,7 @@ class DocumentIdentificatieActionHandler implements ActionHandlerInterface
             '$schema'     => 'https://docs.commongateway.nl/schemas/ActionHandler.schema.json',
             'title'       => 'DocumentIdentificatieActionHandler',
             'description' => 'This is a action to create objects from the fetched applications from the componenten catalogus.',
-            'properties' => []
+            'properties'  => [],
         ];
 
     }//end getConfiguration()
