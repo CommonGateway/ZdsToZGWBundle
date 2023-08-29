@@ -4,7 +4,7 @@
         "schemas": [
             {
                 "$id": "https://zds..nl/endpoint/zds.endpoint.json",
-                "reference": "https://simxml.vrijBRP.nl/schemas/simxml.zrc.zaak.schema.json",
+                "reference": "https://zds.vrijBRP.nl/schemas/zds.zrc.zaak.schema.json",
                 "path": "stuf/zds",
                 "methods": [
                     "POST"
