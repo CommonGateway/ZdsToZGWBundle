@@ -8,7 +8,7 @@
   ],
   "throws": ["vrijbrp.zaak.created"],
   "conditions": {
-    "==": [
+    "!!": [
       {"var": "body.SOAP-ENV:Body.ns2:zakLk01"},
       []
     ]

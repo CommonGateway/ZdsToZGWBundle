@@ -8,7 +8,7 @@
   ],
   "throws": [],
   "conditions": {
-    "==": [
+    "!!": [
       {"var": "body.SOAP-ENV:Body.ns2:genereerZaakIdentificatie_Di02"},
       []
     ]
