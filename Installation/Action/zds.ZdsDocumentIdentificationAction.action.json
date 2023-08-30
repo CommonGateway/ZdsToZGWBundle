@@ -1,15 +1,16 @@
 {
   "title": "ZdsDocumentIdentificationAction",
   "$id": "https://zds.nl/action/zds.ZdsDocumentIdentificationAction.action.json",
-  "$schema": "https://docs.commongateway.nl/schemas/ActionHandler.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Action.schema.json",
   "version": "0.0.1",
   "listens": [
     "zds.inbound"
   ],
   "throws": [],
   "conditions": {
-    "==": [
-      {"var": "body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02"}
+    "!!": [
+      {"var": "body.SOAP-ENV:Body.ns2:genereerDocumentIdentificatie_Di02"},
+      []
     ]
   },
   "class": "CommonGateway\\ZdsToZGWBundle\\ActionHandler\\DocumentIdentificatieActionHandler",

@@ -1,15 +1,16 @@
 {
   "title": "ZdsZaakAction",
   "$id": "https://zds.nl/action/zds.ZdsZaakAction.action.json",
-  "$schema": "https://docs.commongateway.nl/schemas/ActionHandler.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Action.schema.json",
   "version": "0.0.1",
   "listens": [
     "zds.inbound"
   ],
   "throws": ["vrijbrp.zaak.created"],
   "conditions": {
-    "==": [
-      {"var": "body.SOAP-ENV:Body.ns2:zakLk01"}
+    "!!": [
+      {"var": "body.SOAP-ENV:Body.ns2:zakLk01"},
+      []
     ]
   },
   "class": "CommonGateway\\ZdsToZGWBundle\\ActionHandler\\ZdsZaakActionHandler",

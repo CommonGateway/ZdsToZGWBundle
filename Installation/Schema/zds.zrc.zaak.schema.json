@@ -1,0 +1,298 @@
+{
+  "$id": "https://zds.vrijBRP.nl/schemas/zds.zrc.zaak.schema.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Entity.schema.json",
+  "version": "0.0.1",
+  "title": "Zaak",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "nullable": true
+    },
+    "url": {
+      "title": "Url",
+      "description": "URL-referentie naar dit object. Dit is de unieke identificatie en locatie van dit object.",
+      "type": "string",
+      "format": "uri",
+      "maxLength": 1000,
+      "minLength": 1,
+      "readOnly": true,
+      "default": "{{ selfUrl(object) }}"
+    },
+    "uuid": {
+      "title": "Uuid",
+      "description": "Unieke resource identifier (UUID4)",
+      "type": "string",
+      "format": "uuid",
+      "readOnly": true
+    },
+    "identificatie": {
+      "title": "Identificatie",
+      "description": "De unieke identificatie van de ZAAK binnen de organisatie die verantwoordelijk is voor de behandeling van de ZAAK.",
+      "type": "string",
+      "maxLength": 40
+    },
+    "omschrijving": {
+      "title": "Omschrijving",
+      "description": "Een korte omschrijving van de zaak.",
+      "type": "string",
+      "maxLength": 80
+    },
+    "toelichting": {
+      "title": "Toelichting",
+      "description": "Een toelichting op de zaak.",
+      "type": "string",
+      "maxLength": 1000
+    },
+    "zaaktype": {
+      "format": "url",
+      "description": "ZaakType from ZaakTypeCatalogus",
+      "$ref": "https://vng.opencatalogi.nl/schemas/ztc.zaakType.schema.json"
+    },
+    "registratiedatum": {
+      "title": "Registratiedatum",
+      "description": "De datum waarop de zaakbehandelende organisatie de ZAAK heeft geregistreerd. Indien deze niet opgegeven wordt, wordt de datum van vandaag gebruikt.",
+      "type": "string",
+      "format": "date"
+    },
+    "verantwoordelijkeOrganisatie": {
+      "title": "Verantwoordelijke organisatie",
+      "description": "Het RSIN van de Niet-natuurlijk persoon zijnde de organisatie die eindverantwoordelijk is voor de behandeling van de zaak. Dit moet een geldig RSIN zijn van 9 nummers en voldoen aan https://nl.wikipedia.org/wiki/Burgerservicenummer#11-proef",
+      "type": "string",
+      "maxLength": 9,
+      "minLength": 1
+    },
+    "startdatum": {
+      "title": "Startdatum",
+      "description": "De datum waarop met de uitvoering van de zaak is gestart",
+      "type": "string",
+      "format": "date"
+    },
+    "einddatum": {
+      "title": "Einddatum",
+      "description": "De datum waarop de uitvoering van de zaak afgerond is.",
+      "type": "string",
+      "format": "date",
+      "nullable": true,
+      "readOnly": true
+    },
+    "einddatumGepland": {
+      "title": "Einddatum gepland",
+      "description": "De datum waarop volgens de planning verwacht wordt dat de zaak afgerond wordt.",
+      "type": "string",
+      "format": "date",
+      "nullable": true
+    },
+    "uiterlijkeEinddatumAfdoening": {
+      "title": "Uiterlijke einddatum afdoening",
+      "description": "De laatste datum waarop volgens wet- en regelgeving de zaak afgerond dient te zijn.",
+      "type": "string",
+      "format": "date",
+      "nullable": true
+    },
+    "publicatiedatum": {
+      "title": "Publicatiedatum",
+      "description": "Datum waarop (het starten van) de zaak gepubliceerd is of wordt.",
+      "type": "string",
+      "format": "date",
+      "nullable": true
+    },
+    "communicatiekanaal": {
+      "title": "Communicatiekanaal",
+      "description": "Het medium waarlangs de aanleiding om een zaak te starten is ontvangen. URL naar een communicatiekanaal in de VNG-Referentielijst van communicatiekanalen.",
+      "type": "string",
+      "format": "uri",
+      "maxLength": 1000
+    },
+    "productenOfDiensten": {
+      "description": "De producten en/of diensten die door de zaak worden voortgebracht. Dit zijn URLs naar de resources zoals die door de producten- en dienstencatalogus-API wordt ontsloten. De producten/diensten moeten bij het zaaktype vermeld zijn.",
+      "type": "array",
+      "items": {
+        "title": "URL naar product/dienst",
+        "type": "string",
+        "format": "uri",
+        "maxLength": 1000,
+        "minLength": 1
+      }
+    },
+    "vertrouwelijkheidaanduiding": {
+      "title": "Vertrouwlijkheidaanduiding",
+      "description": "Aanduiding van de mate waarin het zaakdossier van de ZAAK voor de openbaarheid bestemd is. Optioneel - indien geen waarde gekozen wordt, dan wordt de waarde van het ZAAKTYPE overgenomen. Dit betekent dat de API _altijd_ een waarde teruggeeft.",
+      "type": "string",
+      "enum": [
+        "openbaar",
+        "beperkt_openbaar",
+        "intern",
+        "zaakvertrouwelijk",
+        "vertrouwelijk",
+        "confidentieel",
+        "geheim",
+        "zeer_geheim"
+      ]
+    },
+    "betalingsindicatie": {
+      "title": "Betalingsindicatie",
+      "description": "Indicatie of de, met behandeling van de zaak gemoeide, kosten betaald zijn door de desbetreffende betrokkene.\n\nUitleg bij mogelijke waarden:\n\n* `nvt` - Er is geen sprake van te betalen, met de zaak gemoeide, kosten.\n* `nog_niet` - De met de zaak gemoeide kosten zijn (nog) niet betaald.\n* `gedeeltelijk` - De met de zaak gemoeide kosten zijn gedeeltelijk betaald.\n* `geheel` - De met de zaak gemoeide kosten zijn geheel betaald.",
+      "type": "string",
+      "enum": [
+        "nvt",
+        "nog_niet",
+        "gedeeltelijk",
+        "geheel"
+      ]
+    },
+    "betalingsindicatieWeergave": {
+      "title": "Betalingsindicatie weergave",
+      "description": "Uitleg bij `betalingsindicatie`.",
+      "type": "string",
+      "minLength": 1,
+      "readOnly": true
+    },
+    "laatsteBetaaldatum": {
+      "title": "Laatste betaaldatum",
+      "description": "De datum waarop de meest recente betaling is verwerkt van kosten die gemoeid zijn met behandeling van de zaak.",
+      "type": "string",
+      "format": "date-time",
+      "nullable": true
+    },
+    "zaakgeometrie": {
+      "format": "url",
+      "$ref": "https://vng.opencatalogi.nl/schemas/zrc.geoJSONGeometry.schema.json"
+    },
+    "verlenging": {
+      "format": "url",
+      "$ref": "https://vng.opencatalogi.nl/schemas/zrc.verlenging.schema.json"
+    },
+    "opschorting": {
+      "format": "url",
+      "$ref": "https://vng.opencatalogi.nl/schemas/zrc.opschorting.schema.json"
+    },
+    "selectielijstklasse": {
+      "title": "Selectielijstklasse",
+      "description": "URL-referentie naar de categorie in de gehanteerde 'Selectielijst Archiefbescheiden' die, gezien het zaaktype en het resultaattype van de zaak, bepalend is voor het archiefregime van de zaak.",
+      "type": "string",
+      "format": "uri",
+      "maxLength": 1000
+    },
+    "hoofdzaak": {
+      "title": "Is deelzaak van",
+      "description": "URL-referentie naar de ZAAK, waarom verzocht is door de initiator daarvan, die behandeld wordt in twee of meer separate ZAAKen waarvan de onderhavige ZAAK er één is.",
+      "type": "string",
+      "format": "uri",
+      "nullable": true
+    },
+    "deelzaken": {
+      "description": "URL-referenties naar deel ZAAKen.",
+      "type": "array",
+      "format": "url",
+      "uniqueItems": true,
+      "items": {
+        "description": "URL-referenties naar deel ZAAKen.",
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.zaak.schema.json"
+      },
+      "readOnly": true
+    },
+    "relevanteAndereZaken": {
+      "description": "Een lijst van relevante andere zaken.",
+      "type": "array",
+      "format": "url",
+      "items": {
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.relevanteZaak.schema.json"
+      }
+    },
+    "eigenschappen": {
+      "type": "array",
+      "format": "url",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.zaakEigenschap.schema.json"
+      },
+      "readOnly": true
+    },
+    "rollen": {
+      "type": "array",
+      "format": "url",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.rol.schema.json"
+      },
+      "readOnly": true
+    },
+    "status": {
+       "format": "url",
+      "$ref": "https://vng.opencatalogi.nl/schemas/zrc.status.schema.json"
+    },
+    "zaakinformatieobjecten": {
+      "type": "array",
+      "format": "url",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.zaakInformatieObject.schema.json"
+      },
+      "readOnly": true
+    },
+    "zaakobjecten": {
+      "type": "array",
+      "format": "url",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "readOnly": true
+    },
+    "kenmerken": {
+      "description": "Lijst van kenmerken. Merk op dat refereren naar gerelateerde objecten beter kan via `ZaakObject`.",
+      "type": "array",
+      "items": {
+        "$ref": "https://vng.opencatalogi.nl/schemas/zrc.zaakKenmerk.schema.json"
+      }
+    },
+    "archiefnominatie": {
+      "title": "Archiefnominatie",
+      "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `blijvend_bewaren` - Het zaakdossier moet bewaard blijven en op de Archiefactiedatum overgedragen worden naar een archiefbewaarplaats.\n* `vernietigen` - Het zaakdossier moet op of na de Archiefactiedatum vernietigd worden.",
+      "type": "string",
+      "enum": [
+        "blijvend_bewaren",
+        "vernietigen"
+      ],
+      "nullable": true
+    },
+    "archiefstatus": {
+      "title": "Archiefstatus",
+      "description": "Aanduiding of het zaakdossier blijvend bewaard of na een bepaalde termijn vernietigd moet worden.\n\nUitleg bij mogelijke waarden:\n\n* `nog_te_archiveren` - De zaak cq. het zaakdossier is nog niet als geheel gearchiveerd.\n* `gearchiveerd` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt.\n* `gearchiveerd_procestermijn_onbekend` - De zaak cq. het zaakdossier is als geheel niet-wijzigbaar bewaarbaar gemaakt maar de vernietigingsdatum kan nog niet bepaald worden.\n* `overgedragen` - De zaak cq. het zaakdossier is overgebracht naar een archiefbewaarplaats.",
+      "type": "string",
+      "enum": [
+        "nog_te_archiveren",
+        "gearchiveerd",
+        "gearchiveerd_procestermijn_onbekend",
+        "overgedragen"
+      ]
+    },
+    "archiefactiedatum": {
+      "title": "Archiefactiedatum",
+      "description": "De datum waarop het gearchiveerde zaakdossier vernietigd moet worden dan wel overgebracht moet worden naar een archiefbewaarplaats. Wordt automatisch berekend bij het aanmaken of wijzigen van een RESULTAAT aan deze ZAAK indien nog leeg.",
+      "type": "string",
+      "format": "date",
+      "nullable": true
+    },
+    "resultaat": {
+      "title": "Resultaat",
+      "description": "URL-referentie naar het RESULTAAT. Indien geen resultaat bekend is, dan is de waarde 'null'",
+      "type": "string",
+      "format": "uri",
+      "nullable": true,
+      "readOnly": true
+    },
+    "opdrachtgevendeOrganisatie": {
+      "title": "Opdrachtgevende organisatie",
+      "description": "De krachtens publiekrecht ingestelde rechtspersoon dan wel ander niet-natuurlijk persoon waarbinnen het (bestuurs)orgaan zetelt dat opdracht heeft gegeven om taken uit te voeren waaraan de zaak invulling geeft.",
+      "type": "string",
+      "maxLength": 9
+    },
+    "referentienummer": {
+      "type": "string"
+    }
+  }
+}
