@@ -217,7 +217,7 @@ class ZdsToZgwService
             $mappingOut       = $this->getMapping('https://zds.nl/mapping/zds.zgwDocumentToDu02.mapping.json');
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
         } else {
-            $this->logger->warning('Case with identifier '.$documentArray['identificatie'].' found, returning bad request error');
+            $this->logger->warning('Document with identifier '.$documentArray['identificatie'].' found, returning bad request error');
             $data['response'] = $this->createResponse(['Error' => 'The document identification with id '.$documentArray['identificatie'].' already exists'], 400);
         }//end if
 
@@ -246,6 +246,7 @@ class ZdsToZgwService
                 $this->logger->debug('Property has been found, connecting to property');
 
                 $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschappen[0]['_self']['id'];
+                $eigenschapObjects[] = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id'])->getId()->toString();
             } else {
                 $this->logger->debug('No existing property found, creating new property');
 
@@ -256,9 +257,7 @@ class ZdsToZgwService
                 $this->entityManager->persist($eigenschapObject);
                 $this->entityManager->flush();
 
-                // @TODO: Check what should be here.
-                // $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
-                $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject;
+                $eigenschapObjects[] = $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschapObject->getId()->toString();
             }//end if
         }//end foreach
 
@@ -290,7 +289,7 @@ class ZdsToZgwService
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
-                $rolType                              = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id']);
+                $rolTypeObjects[] = $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id'])->getId()->toString();
             } else {
                 $this->logger->debug('No existing role type has been found, creating new role type');
                 $rolType                     = new ObjectEntity($rolTypeEntity);
@@ -380,6 +379,7 @@ class ZdsToZgwService
             $zaak = $this->entityManager->find('App:ObjectEntity', $zaken[0]['_self']['id']);
             $zaak->hydrate($zaakArray);
 
+            // TODO: triggers an error.
             $this->entityManager->persist($zaak);
             $this->entityManager->flush();
 
@@ -450,7 +450,7 @@ class ZdsToZgwService
             $this->logger->warning('More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']);
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']], 400);
         } else if (count($zaken) > 1) {
-            $this->logger->warning('More than one case exists with id '.$zaakDocumentArray['zaak']);
+            $this->logger->warning('More than one document exists with id '.$zaakDocumentArray['zaak']);
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['zaak']], 400);
         } else {
             $this->logger->warning('The document with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist');
