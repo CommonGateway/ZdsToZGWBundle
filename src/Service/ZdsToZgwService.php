@@ -246,7 +246,7 @@ class ZdsToZgwService
                 $this->logger->debug('Property has been found, connecting to property');
 
                 $zaakArray['eigenschappen'][$key]['eigenschap'] = $eigenschappen[0]['_self']['id'];
-                $eigenschapObjects[] = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id'])->getId()->toString();
+                $eigenschapObjects[]                            = $this->entityManager->find('App:ObjectEntity', $eigenschappen[0]['_self']['id'])->getId()->toString();
             } else {
                 $this->logger->debug('No existing property found, creating new property');
 
@@ -289,7 +289,7 @@ class ZdsToZgwService
             if ($rollen !== []) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
                 $zaakArray['rollen'][$key]['roltype'] = $rollen[0]['_self']['id'];
-                $rolTypeObjects[] = $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id'])->getId()->toString();
+                $rolTypeObjects[]                     = $rolType = $this->entityManager->find('App:ObjectEntity', $rollen[0]['_self']['id'])->getId()->toString();
             } else {
                 $this->logger->debug('No existing role type has been found, creating new role type');
                 $rolType                     = new ObjectEntity($rolTypeEntity);
