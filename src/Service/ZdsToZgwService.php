@@ -178,7 +178,7 @@ class ZdsToZgwService
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaak->toArray()), 200);
         } else {
             $this->logger->warning('Case with identifier '.$zaakArray['identificatie'].' found, returning bad request error');
-            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakArray['identificatie'].' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The case identification with id '.$zaakArray['identificatie'].' already exists'], 400);
         }//end if
 
         return $data;
@@ -218,7 +218,7 @@ class ZdsToZgwService
             $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $document->toArray()), 200);
         } else {
             $this->logger->warning('Case with identifier '.$documentArray['identificatie'].' found, returning bad request error');
-            $data['response'] = $this->createResponse(['Error' => 'The document with id '.$documentArray['identificatie'].' already exists'], 400);
+            $data['response'] = $this->createResponse(['Error' => 'The document identification with id '.$documentArray['identificatie'].' already exists'], 400);
         }//end if
 
         return $data;
@@ -451,10 +451,10 @@ class ZdsToZgwService
             $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['informatieobject']['identificatie']], 400);
         } else if (count($zaken) > 1) {
             $this->logger->warning('More than one case exists with id '.$zaakDocumentArray['zaak']);
-            $data['response'] = $this->createResponse(['Error' => 'More than one case exists with id '.$zaakDocumentArray['zaak']], 400);
+            $data['response'] = $this->createResponse(['Error' => 'More than one document exists with id '.$zaakDocumentArray['zaak']], 400);
         } else {
-            $this->logger->warning('The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist');
-            $data['response'] = $this->createResponse(['Error' => 'The case with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist'], 400);
+            $this->logger->warning('The document with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist');
+            $data['response'] = $this->createResponse(['Error' => 'The document with id '.$zaakDocumentArray['informatieobject']['identificatie'].' does not exist'], 400);
         }//end if
 
         return $data;
