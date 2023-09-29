@@ -1,19 +1,17 @@
-publiccodeYmlVersion: "0.1"
-name: "ZdsToZGWBundle"
-url: "https://github.com/CommonGateway/ZdsToZGWBundle"
-releaseDate: "2022-10-01"
-softwareType: addon
-
-platforms:
-  - web
-  
 categories:
-  - collaboration
-  - it-development
-  
+- collaboration
+- it-development
+description: This bundle translates Zds to ZGW
 developmentStatus: beta
-description:
-  nl:
-    shortDescription: "ZdsToZGWBundle"
-  en:
-    shortDescription: "ZdsToZGWBundle"
+name: ZdsToZGWBundle
+nl: {}
+organisation:
+  logo: https://avatars.githubusercontent.com/u/106860777?v=4
+  name: CommonGateway
+  url: CommonGateway
+platforms:
+- web
+publiccodeYmlVersion: '0.1'
+releaseDate: '2022-10-01'
+softwareType: addon
+url: https://github.com/CommonGateway/ZdsToZGWBundle
