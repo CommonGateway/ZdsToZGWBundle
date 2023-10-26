@@ -329,7 +329,7 @@ class ZdsToZgwService
             $this->logger->debug('Case type found, connecting case to case type');
 
             $zaaktype              = $this->entityManager->find('App:ObjectEntity', $zaaktypes[0]['_self']['id']);
-            $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
+            $zaakArray['zaaktype'] = $zaaktype;
         } else {
             $this->logger->debug('No existing case type found, creating new case type');
 
@@ -339,7 +339,7 @@ class ZdsToZgwService
             $this->entityManager->persist($zaaktype);
             $this->entityManager->flush();
 
-            $zaakArray['zaaktype'] = $zaaktype->getId()->toString();
+            $zaakArray['zaaktype'] = $zaaktype;
         }//end if
 
         $this->logger->info('Case connected to case type with identification'.$zaaktype->toArray()['identificatie']);
