@@ -2,7 +2,7 @@
   "title": "ZDSToZGWZaak",
   "$id": "https://zds.nl/mapping/zds.zdsHeeftAlsInitiatorToRol.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "passTrough": false,
   "mapping": {
     "betrokkeneType": "natuurlijk_persoon",
@@ -24,10 +24,19 @@
   },
   "cast": {
     "roltype": "jsonToArray",
-    "betrokkeneIdentificatie.inpBsn": "keyCantBeValue",
-    "betrokkeneIdentificatie.geslachtsnaam": "keyCantBeValue",
-    "betrokkeneIdentificatie.voornamen": "keyCantBeValue",
-    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "keyCantBeValue"
+    "betrokkeneIdentificatie.inpBsn": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:inp&#46;bsn",
+    "betrokkeneIdentificatie.geslachtsnaam": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsnaam",
+    "betrokkeneIdentificatie.voorvoegselGeslachtsnaam": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorvoegselgeslachtsnaam",
+    "betrokkeneIdentificatie.voorletters": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voorletters",
+    "betrokkeneIdentificatie.voornamen": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:voornamen",
+    "betrokkeneIdentificatie.geslachtaanduiding": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geslachtsaanduiding",
+    "betrokkeneIdentificatie.geboortedatum": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:geboortedatum",
+    "betrokkeneIdentificatie.verblijfsadres.wplWoonplaatsNaam": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:wpl&#46;woonplaatsnaam",
+    "betrokkeneIdentificatie.verblijfsadres.gorOpenbareRuimteNaam": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:gor&#46;openbareruimtenaam",
+    "betrokkeneIdentificatie.verblijfsadres.aoaPostcode": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;postcode",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummer": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummer",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisletter": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisletter",
+    "betrokkeneIdentificatie.verblijfsadres.aoaHuisnummertoevoeging": "unsetIfValue==ns2:gerelateerde.ns2:natuurlijkPersoon.ns3:verblijfsadres.ns3:aoa&#46;huisnummertoevoeging"
   }
 }
 

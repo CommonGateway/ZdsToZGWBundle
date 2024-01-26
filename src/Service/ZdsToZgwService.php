@@ -696,6 +696,7 @@ class ZdsToZgwService
             // Set the zaakinformatieobject to the data.documents array.
             $this->data['documents'][] = $zaakInformatieObject->toArray();
 
+            $response = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
             // Set the response with the mapped zaakinformatieobject to Bv03.
             $this->data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $zaakInformatieObject->toArray()), 200);
         }
