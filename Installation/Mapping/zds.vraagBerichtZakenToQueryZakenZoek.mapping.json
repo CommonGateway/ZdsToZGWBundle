@@ -1,0 +1,32 @@
+{
+	"title": "VraagBerichtZakenToQueryZakenZoek",
+	"$id": "https://zds.nl/mapping/zds.vraagBerichtZakenToQueryZakenZoek.mapping.json",
+	"$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
+	"version": "0.0.1",
+	"passTrough": false,
+	"mapping": {
+		"identificatie": "SOAP-ENV:Body.ns2:zakLv01.ns2:gelijk.ns2:identificatie",
+		"bronorganisatie": "?",
+		"zaaktype": "?",
+		"archiefnominatie": "?",
+		"archiefnominatie__in": "?",
+		"archiefactiedatum": "?",
+		"archiefactiedatum__lt": "?",
+		"archiefactiedatum__gt": "?",
+		"archiefstatus": "?",
+		"archiefstatus__in": "?",
+		"startdatum": "?",
+		"startdatum__gt": "?",
+		"startdatum__gte": "?",
+		"startdatum__lt": "?",
+		"startdatum__lte": "?",
+		"rol__betrokkeneType": "?",
+		"rol__betrokkene": "?",
+		"rol__omschrijvingGeneriek": "?",
+		"maximaleVertrouwelijkheidaanduiding": "?",
+		"rol_betrokkeneIdentificatienatuurlijkPersoon_inpBsn": "?",
+		"rol_betrokkeneIdentificatiemedewerker_identificatie": "?",
+		"rol_betrokkeneIdentificatieorganisatorischeEenheid_identificatie": "?",
+		"ordering": "?"
+	  }
+  }

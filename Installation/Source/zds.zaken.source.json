@@ -1,0 +1,8 @@
+{
+    "title": "Zaken API",
+    "$id": "https://zds.nl/source/zds.zaken.source.json",
+    "$schema": "https://docs.commongateway.nl/schemas/Gateway.schema.json",
+    "version": "0.0.1",
+    "location": "!ChangeMe!",
+    "isEnabled" : false
+}
