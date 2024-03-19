@@ -717,10 +717,11 @@ class ZdsToZgwService
 
     }//end documentActionHandler()
 
+
     /**
      * Generates a response to document calls
      *
-     * @param array $data The data received from the event.
+     * @param array $data          The data received from the event.
      * @param array $configuration The configuration for the action.
      *
      * @return array The resulting data, including a response.
