@@ -2,7 +2,7 @@
   "title": "ZGWZaakToDu02",
   "$id": "https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json",
   "$schema": "https://docs.commongateway.nl/schemas/Mapping.schema.json",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "passTrough": false,
   "mapping": {
     "@xmlns:SOAP-ENV": "http://schemas.xmlsoap.org/soap/envelope/",
@@ -10,8 +10,8 @@
     "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:berichtcode": "Bv03",
     "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:zender.StUF:applicatie": "CommonGateway",
     "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:ontvanger.StUF:applicatie": "SIMform",
-    "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:referentienummer": "informatieobject.identificatie",
+    "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:referentienummer": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:identificatie",
     "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:tijdstipbericht": "{{ 'now'|date('YmdHis') }}",
-    "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:crossRefnummmer": "informatieobject.identificatie"
+    "SOAP-ENV:Body.StUF:Bv03Bericht.StUF:stuurgegevens.StUF:crossRefnummmer": "SOAP-ENV:Body.ns2:edcLk01.ns2:object.ns2:identificatie"
   }
 }

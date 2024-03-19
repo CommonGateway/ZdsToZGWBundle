@@ -717,12 +717,22 @@ class ZdsToZgwService
 
     }//end documentActionHandler()
 
-
+    /**
+     * Generates a response to document calls
+     *
+     * @param array $data The data received from the event.
+     * @param array $configuration The configuration for the action.
+     *
+     * @return array The resulting data, including a response.
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\SyntaxError
+     */
     public function documentResponseHandler(array $data, array $configuration): array
     {
         $mappingOut = $this->resourceService->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json', 'common-gateway/zds-to-zgw-bundle');
 
-        $this->createResponse($this->mappingService->mapping($mappingOut, $data['body']), 200);
+        $data['response'] = $this->createResponse($this->mappingService->mapping($mappingOut, $data['body']), 200);
         return $data;
 
     }//end documentResponseHandler()

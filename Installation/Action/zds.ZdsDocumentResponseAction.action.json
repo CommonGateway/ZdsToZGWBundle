@@ -1,8 +1,8 @@
 {
-  "title": "ZdsDocumentAction",
-  "$id": "https://zds.nl/action/zds.ZdsDocumentAction.action.json",
+  "title": "ZdsDocumentResponseAction",
+  "$id": "https://zds.nl/action/zds.ZdsDocumentResponseAction.action.json",
   "$schema": "https://docs.commongateway.nl/schemas/Action.schema.json",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "listens": [
     "zds.inbound"
   ],
