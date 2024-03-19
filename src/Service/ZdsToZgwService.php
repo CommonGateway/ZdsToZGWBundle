@@ -717,13 +717,15 @@ class ZdsToZgwService
 
     }//end documentActionHandler()
 
+
     public function documentResponseHandler(array $data, array $configuration): array
     {
         $mappingOut = $this->resourceService->getMapping('https://zds.nl/mapping/zds.zgwDocumentToBv03.mapping.json', 'common-gateway/zds-to-zgw-bundle');
 
         $this->createResponse($this->mappingService->mapping($mappingOut, $data['body']), 200);
         return $data;
-    }
+
+    }//end documentResponseHandler()
 
 
 }//end class
