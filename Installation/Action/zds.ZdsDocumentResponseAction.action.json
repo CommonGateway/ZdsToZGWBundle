@@ -1,0 +1,20 @@
+{
+  "title": "ZdsDocumentAction",
+  "$id": "https://zds.nl/action/zds.ZdsDocumentAction.action.json",
+  "$schema": "https://docs.commongateway.nl/schemas/Action.schema.json",
+  "version": "0.0.2",
+  "listens": [
+    "zds.inbound"
+  ],
+  "throws": ["vrijbrp.document.created"],
+  "conditions": {
+    "!!": [
+      {"var": "body.SOAP-ENV:Body.ns2:edcLk01"},
+      []
+    ]
+  },
+  "class": "CommonGateway\\ZdsToZGWBundle\\ActionHandler\\ZdsDocumentResponseHandler",
+  "configuration": [],
+  "isLockable": false,
+  "isEnabled": true
+}
