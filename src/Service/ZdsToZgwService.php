@@ -84,7 +84,7 @@ class ZdsToZgwService
         $this->cacheService    = $cacheService;
         $this->logger          = $pluginLogger;
         $this->resourceService = $resourceService;
-        $this->parameterBag = $parameterBag;
+        $this->parameterBag    = $parameterBag;
 
         $this->data          = [];
         $this->configuration = [];
@@ -608,7 +608,6 @@ class ZdsToZgwService
     }//end getCaseFromDocument()
 
 
-
     /**
      * Generates a download endpoint from the id of an 'Enkelvoudig Informatie Object' and the endpoint for downloads.
      *
@@ -748,7 +747,7 @@ class ZdsToZgwService
 
         $informatieobject->hydrate($zaakDocumentArray['informatieobject']);
 
-        if(in_array($zaak->getValue('zaaktype')->getValue('identificatie'), ['B333', 'B334'])) {
+        if (in_array($zaak->getValue('zaaktype')->getValue('identificatie'), ['B333', 'B334'])) {
             $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
             $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
         }
@@ -842,10 +841,11 @@ class ZdsToZgwService
 
     }//end documentActionHandler()
 
+
     /**
      * Generates a response to document calls
      *
-     * @param array $data The data received from the event.
+     * @param array $data          The data received from the event.
      * @param array $configuration The configuration for the action.
      *
      * @return array The resulting data, including a response.
