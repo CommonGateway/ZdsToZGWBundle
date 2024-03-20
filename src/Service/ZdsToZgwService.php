@@ -2,7 +2,9 @@
 
 namespace CommonGateway\ZdsToZGWBundle\Service;
 
+use App\Entity\Endpoint;
 use App\Entity\Entity as Schema;
+use App\Entity\File;
 use App\Entity\Mapping;
 use App\Entity\ObjectEntity;
 use CommonGateway\CoreBundle\Service\CacheService;
@@ -14,6 +16,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Safe\DateTime;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
@@ -48,6 +51,8 @@ class ZdsToZgwService
      */
     private GatewayResourceService $resourceService;
 
+    private ParameterBagInterface $parameterBag;
+
     /**
      * @var array $configuration
      */
@@ -71,13 +76,15 @@ class ZdsToZgwService
         MappingService $mappingService,
         CacheService $cacheService,
         LoggerInterface $pluginLogger,
-        GatewayResourceService $resourceService
+        GatewayResourceService $resourceService,
+        ParameterBagInterface $parameterBag
     ) {
         $this->entityManager   = $entityManager;
         $this->mappingService  = $mappingService;
         $this->cacheService    = $cacheService;
         $this->logger          = $pluginLogger;
         $this->resourceService = $resourceService;
+        $this->parameterBag = $parameterBag;
 
         $this->data          = [];
         $this->configuration = [];
@@ -429,12 +436,12 @@ class ZdsToZgwService
         // Omschrijving hebben we al.
         $dataArray = [
             'catalogus'                   => null,
-        // From zaaktype,
+            // From zaaktype,
             'omschrijving'                => $description,
             'vertrouwelijkheidaanduiding' => 'zaakvertrouwelijk',
-        // TODO: Uitvragen wat dit moet zijn.
+            // TODO: Uitvragen wat dit moet zijn.
             'beginGeldigheid'             => $date->format('Y-m-d'),
-        // TODO: Uitvragen wat dit moet zijn.
+            // TODO: Uitvragen wat dit moet zijn.
         ];
 
         // zaaktype moet een catalogus hebben.
@@ -565,7 +572,7 @@ class ZdsToZgwService
             return null;
         }
 
-                $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['zaak']], [$schema->getId()->toString()])['results'];
+        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['zaak']], [$schema->getId()->toString()])['results'];
 
         // Get the zaak id the zaken array is not empty.
         if (empty($zaken) === false && count($zaken) === 1) {
@@ -601,6 +608,118 @@ class ZdsToZgwService
     }//end getCaseFromDocument()
 
 
+
+    /**
+     * Generates a download endpoint from the id of an 'Enkelvoudig Informatie Object' and the endpoint for downloads.
+     *
+     * @param string   $id               The id of the Enkelvoudig Informatie Object.
+     * @param Endpoint $downloadEndpoint The endpoint for downloads.
+     *
+     * @return string The endpoint to download the document from.
+     */
+    private function generateDownloadEndpoint(string $id, Endpoint $downloadEndpoint): string
+    {
+        // Unset the last / from the app_url.
+        $baseUrl = rtrim($this->parameterBag->get('app_url'), '/');
+
+        $pathArray = $downloadEndpoint->getPath();
+        foreach ($pathArray as $key => $value) {
+            if ($value == 'id' || $value == '[id]' || $value == '{id}') {
+                $pathArray[$key] = $id;
+            }
+        }
+
+        return $baseUrl.'/api/'.implode('/', $pathArray);
+
+    }//end generateDownloadEndpoint()
+
+
+    /**
+     * Creates or updates a file associated with a given ObjectEntity instance.
+     *
+     * This method handles the logic for creating or updating a file based on
+     * provided data. If an existing file is associated with the ObjectEntity,
+     * it updates the file's properties; otherwise, it creates a new file.
+     * It also sets the response data based on the method used (POST or other)
+     * and if the `$setResponse` parameter is set to `true`.
+     *
+     * @param ObjectEntity $objectEntity The object entity associated with the file.
+     * @param array        $data         Data associated with the file such as title, format, and content.
+     *
+     * @return void
+     */
+    public function createFile(ObjectEntity $objectEntity, array $data): File
+    {
+        if ($data['versie'] === null) {
+            $objectEntity->hydrate(['versie' => 1]);
+        }
+
+        if ($data['versie'] !== null) {
+            $objectEntity->hydrate(['versie' => ++$data['versie']]);
+        }
+
+        $file = new File();
+        $file->setBase64('');
+        $file->setMimeType(($data['formaat'] ?? 'application/pdf'));
+        $file->setName($data['titel']);
+        $file->setExtension('');
+        $file->setSize(0);
+
+        return $file;
+
+    }//end createFile()
+
+
+    /**
+     * Creates or updates a file associated with a given ObjectEntity instance.
+     *
+     * This method handles the logic for creating or updating a file based on
+     * provided data. If an existing file is associated with the ObjectEntity,
+     * it updates the file's properties; otherwise, it creates a new file.
+     * It also sets the response data based on the method used (POST or other)
+     * and if the `$setResponse` parameter is set to `true`.
+     *
+     * @param ObjectEntity $objectEntity     The object entity associated with the file.
+     * @param array        $data             Data associated with the file such as title, format, and content.
+     * @param Endpoint     $downloadEndpoint Endpoint to use for downloading the file.
+     * @param bool         $setResponse      Determines if a response should be set, default is `true`.
+     *
+     * @return void
+     */
+    public function createOrUpdateFile(ObjectEntity $objectEntity, array $data, Endpoint $downloadEndpoint, bool $setResponse=true): void
+    {
+        if ($objectEntity->getValueObject('inhoud') !== false && $objectEntity->getValueObject('inhoud')->getFiles()->count() > 0) {
+            // Get the file from the inhoud object.
+            $file = $objectEntity->getValueObject('inhoud')->getFiles()->first();
+        }
+
+        if ($objectEntity->getValueObject('inhoud') !== false && $objectEntity->getValueObject('inhoud')->getFiles()->count() === 0) {
+            // Create the file with the data.
+            $file = $this->createFile($objectEntity, $data);
+        }
+
+        if ($data['inhoud'] !== null && $data['inhoud'] !== '' && filter_var($data['inhoud'], FILTER_VALIDATE_URL) === false) {
+            $file->setSize(mb_strlen(base64_decode($data['inhoud'])));
+            $file->setBase64($data['inhoud']);
+        }
+
+        $file->setValue($objectEntity->getValueObject('inhoud'));
+        $this->entityManager->persist($file);
+        $objectEntity->getValueObject('inhoud')->addFile($file)->setStringValue($this->generateDownloadEndpoint($objectEntity->getId()->toString(), $downloadEndpoint));
+        $this->entityManager->persist($objectEntity);
+        $this->entityManager->flush();
+
+        if ($setResponse === true) {
+            $this->data['response'] = new Response(
+                \Safe\json_encode($objectEntity->toArray(['embedded' => true])),
+                $this->data['method'] === 'POST' ? 201 : 200,
+                ['content-type' => 'application/json']
+            );
+        }
+
+    }//end createOrUpdateFile()
+
+
     /**
      * Creates an enkelvoudiginformatieobject with an informatieobjecttype.
      * Creates a zaakinformatieobject with the zaak and created enkelvoudiginformatieobject
@@ -628,6 +747,12 @@ class ZdsToZgwService
         }
 
         $informatieobject->hydrate($zaakDocumentArray['informatieobject']);
+
+        if(in_array($zaak->getValue('zaaktype')->getValue('identificatie'), ['B333', 'B334'])) {
+            $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
+            $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
+        }
+
         $this->entityManager->persist($informatieobject);
         $this->entityManager->flush();
 
