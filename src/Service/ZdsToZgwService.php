@@ -747,10 +747,9 @@ class ZdsToZgwService
 
         $informatieobject->hydrate($zaakDocumentArray['informatieobject']);
 
-        if (in_array($zaak->getValue('zaaktype')->getValue('identificatie'), ['B333', 'B334'])) {
-            $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
-            $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
-        }
+        $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
+        $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
+
 
         $this->entityManager->persist($informatieobject);
         $this->entityManager->flush();
