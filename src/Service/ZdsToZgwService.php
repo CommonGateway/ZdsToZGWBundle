@@ -649,11 +649,11 @@ class ZdsToZgwService
      */
     public function createFile(ObjectEntity $objectEntity, array $data): File
     {
-        if ($data['versie'] === null) {
+        if (isset($data['versie']) === false || $data['versie'] === null) {
             $objectEntity->hydrate(['versie' => 1]);
         }
 
-        if ($data['versie'] !== null) {
+        if (isset($data['versie']) === true && $data['versie'] !== null) {
             $objectEntity->hydrate(['versie' => ++$data['versie']]);
         }
 
@@ -749,7 +749,6 @@ class ZdsToZgwService
 
         $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
         $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
-
 
         $this->entityManager->persist($informatieobject);
         $this->entityManager->flush();
