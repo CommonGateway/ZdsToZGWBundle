@@ -750,7 +750,6 @@ class ZdsToZgwService
         $endpoint = $this->resourceService->getEndpoint('https://vng.opencatalogi.nl/endpoints/drc.downloadEnkelvoudigInformatieObject.endpoint.json', 'common-gateway/zds-to-zgw-bundle');
         $this->createOrUpdateFile($informatieobject, $zaakDocumentArray['informatieobject'], $endpoint, false);
 
-
         $this->entityManager->persist($informatieobject);
         $this->entityManager->flush();
 
