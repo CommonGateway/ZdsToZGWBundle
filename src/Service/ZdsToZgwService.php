@@ -133,7 +133,7 @@ class ZdsToZgwService
         }
 
         $zaakArray = $this->mappingService->mapping($mapping, $this->data['body']);
-        $zaken     = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$schema->getId()->toString()])['results'];
+        $zaken     = $this->cacheService->searchObjects(['identificatie' => $zaakArray['identificatie']], [$schema->getId()->toString()])['results'];
         if (empty($zaken) === true) {
             $this->logger->debug('Creating new case with identifier'.$zaakArray['identificatie']);
             $zaak = new ObjectEntity($schema);
@@ -178,7 +178,7 @@ class ZdsToZgwService
         }
 
         $documentArray = $this->mappingService->mapping($mapping, $this->data['body']);
-        $documents     = $this->cacheService->searchObjects(null, ['identificatie' => $documentArray['identificatie']], [$schema->getId()->toString()])['results'];
+        $documents     = $this->cacheService->searchObjects(['identificatie' => $documentArray['identificatie']], [$schema->getId()->toString()])['results'];
         if (empty($documents) === true) {
             $this->logger->debug('Creating new document for identification'.$documentArray['identificatie']);
             $document = new ObjectEntity($schema);
@@ -220,7 +220,7 @@ class ZdsToZgwService
 
         $eigenschapObjects = $zaakType->getValue('eigenschappen');
         foreach ($zaakArray['eigenschappen'] as $key => $eigenschap) {
-            $eigenschappen = $this->cacheService->searchObjects(null, ['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$schema->getId()->toString()])['results'];
+            $eigenschappen = $this->cacheService->searchObjects(['naam' => $eigenschap['eigenschap']['naam'], 'zaaktype' => $zaakType->getSelf()], [$schema->getId()->toString()])['results'];
 
             if (empty($eigenschappen) === false) {
                 $this->logger->debug('Property has been found, connecting to property');
@@ -269,7 +269,7 @@ class ZdsToZgwService
 
         $rolTypeObjects = $zaakType->getValue('roltypen');
         foreach ($zaakArray['rollen'] as $key => $role) {
-            $rollen = $this->cacheService->searchObjects(null, ['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$schema->getId()->toString()])['results'];
+            $rollen = $this->cacheService->searchObjects(['omschrijvingGeneriek' => $role['roltype']['omschrijvingGeneriek'], 'zaaktype' => $zaakType->getSelf()], [$schema->getId()->toString()])['results'];
 
             if (empty($rollen) === false) {
                 $this->logger->debug('Role type has been found, connecting to existing role type');
@@ -316,7 +316,7 @@ class ZdsToZgwService
             return null;
         }
 
-        $zaaktypes = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['zaaktype']['identificatie']], [$schema->getId()->toString()])['results'];
+        $zaaktypes = $this->cacheService->searchObjects(['identificatie' => $zaakArray['zaaktype']['identificatie']], [$schema->getId()->toString()])['results'];
 
         if (empty($zaaktypes) === false && count($zaaktypes) > 0) {
             $this->logger->debug('Case type found, connecting case to case type');
@@ -385,7 +385,7 @@ class ZdsToZgwService
             return $this->data;
         }
 
-        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakArray['identificatie']], [$schema->getId()->toString()])['results'];
+        $zaken = $this->cacheService->searchObjects(['identificatie' => $zaakArray['identificatie']], [$schema->getId()->toString()])['results'];
 
         // Create response with created zaaktype if the zaak is not empty and if there is one result.
         if (empty($zaken) === false && count($zaken) === 1) {
@@ -521,7 +521,7 @@ class ZdsToZgwService
             return null;
         }
 
-        $nformatieobjecttypes = $this->cacheService->searchObjects(null, ['omschrijving' => $description], [$schema->getId()->toString()])['results'];
+        $nformatieobjecttypes = $this->cacheService->searchObjects(['omschrijving' => $description], [$schema->getId()->toString()])['results'];
 
         $informatieobjecttypen = [];
         // Search levert resultaat op dus haal het bestaande object op.
@@ -572,7 +572,7 @@ class ZdsToZgwService
             return null;
         }
 
-        $zaken = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['zaak']], [$schema->getId()->toString()])['results'];
+        $zaken = $this->cacheService->searchObjects(['identificatie' => $zaakDocumentArray['zaak']], [$schema->getId()->toString()])['results'];
 
         // Get the zaak id the zaken array is not empty.
         if (empty($zaken) === false && count($zaken) === 1) {
@@ -800,7 +800,7 @@ class ZdsToZgwService
         $zaakDocumentArray = $this->convertInformatieobjecttype($zaakDocumentArray, $zaak);
 
         // Search enkelvoudiginformatieobject objects with the identificatie in informatieobject.identificatie.
-        $documenten = $this->cacheService->searchObjects(null, ['identificatie' => $zaakDocumentArray['informatieobject']['identificatie']], [$schema->getId()->toString()])['results'];
+        $documenten = $this->cacheService->searchObjects(['identificatie' => $zaakDocumentArray['informatieobject']['identificatie']], [$schema->getId()->toString()])['results'];
 
         // Create response with created zaakinformatieobject if the document is not empty and if there is one result.
         if (empty($documenten) === false && count($documenten) === 1) {
